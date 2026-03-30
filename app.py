@@ -41,8 +41,7 @@ def load_model():
 
 def predict_readmission(model, feature_cols, patient_data):
     """Make a prediction for a single patient."""
-    df = pd.DataFrame(columns=feature_cols)
-    df = df.append(patient_data, ignore_index=True)
+    df = pd.DataFrame([patient_data], columns=feature_cols)
     df = df.fillna(0)
     
     probability = model.predict_proba(df)[0][1]
@@ -123,8 +122,14 @@ def main():
                     help="Number of procedures performed during the encounter"
                 )
                 
+                medicare = st.selectbox(
+                    "Has Medicare",
+                    options=[0, 1],
+                    format_func=lambda x: "Yes" if x == 1 else "No"
+                )
+                
             with col_h2:
-                num_diagnoses = st.slider(
+                number_diagnoses = st.slider(
                     "Number of Diagnoses",
                     min_value=1,
                     max_value=16,
@@ -132,37 +137,34 @@ def main():
                     help="Number of diagnoses entered to the encounter"
                 )
                 
-                precode = st.selectbox(
-                    "Diabetes Mellitus as Primary Diagnosis",
-                    options=[0, 1],
-                    format_func=lambda x: "Yes" if x == 1 else "No",
-                    help="Whether diabetes mellitus was the primary diagnosis"
+                age_group = st.selectbox(
+                    "Age Group",
+                    options=[0, 1, 2],
+                    format_func=lambda x: ["0-30", "30-60", "60-100"][x],
+                    help="Patient age group"
                 )
                 
                 st.subheader("Healthcare History")
                 
-                number_inpatient = st.slider(
-                    "Prior Inpatient Visits (last year)",
-                    min_value=0,
-                    max_value=10,
-                    value=1,
-                    help="Number of inpatient visits in the year preceding the encounter"
+                had_inpatient_days = st.selectbox(
+                    "Had Inpatient Visit (last year)",
+                    options=[0, 1],
+                    format_func=lambda x: "Yes" if x == 1 else "No",
+                    help="Whether patient had inpatient days in the past year"
                 )
                 
-                number_outpatient = st.slider(
-                    "Prior Outpatient Visits (last year)",
-                    min_value=0,
-                    max_value=20,
-                    value=2,
-                    help="Number of outpatient visits in the year preceding the encounter"
+                had_outpatient_days = st.selectbox(
+                    "Had Outpatient Visit (last year)",
+                    options=[0, 1],
+                    format_func=lambda x: "Yes" if x == 1 else "No",
+                    help="Whether patient had outpatient days in the past year"
                 )
                 
-                number_emergency = st.slider(
-                    "Prior Emergency Visits (last year)",
-                    min_value=0,
-                    max_value=10,
-                    value=0,
-                    help="Number of emergency visits in the year preceding the encounter"
+                had_emergency = st.selectbox(
+                    "Had Emergency Visit (last year)",
+                    options=[0, 1],
+                    format_func=lambda x: "Yes" if x == 1 else "No",
+                    help="Whether patient had emergency visits in the past year"
                 )
             
             predict_button = st.form_submit_button("🔮 Predict Readmission Risk", type="primary")
@@ -176,11 +178,13 @@ def main():
                 'num_lab_procedures': num_lab_procedures,
                 'num_medications': num_medications,
                 'num_procedures': num_procedures,
-                'num_diagnoses': num_diagnoses,
-                'precode': precode,
-                'number_inpatient': number_inpatient,
-                'number_outpatient': number_outpatient,
-                'number_emergency': number_emergency
+                'number_diagnoses': number_diagnoses,
+                'medicare': medicare,
+                'medicaid': 0,
+                'had_emergency': had_emergency,
+                'had_inpatient_days': had_inpatient_days,
+                'had_outpatient_days': had_outpatient_days,
+                'age_encoded': age_group
             }
             
             prediction, probability = predict_readmission(model, feature_cols, patient_data)
@@ -211,17 +215,15 @@ def main():
             elif time_in_hospital > 4:
                 risk_factors.append(("Moderate hospital stay (4-7 days)", "Medium"))
                 
-            if number_inpatient >= 3:
-                risk_factors.append(("Multiple prior inpatient visits", "High"))
-            elif number_inpatient >= 1:
-                risk_factors.append(("Prior inpatient visit", "Medium"))
+            if had_inpatient_days == 1:
+                risk_factors.append(("Prior inpatient visit", "High"))
                 
             if num_medications > 25:
                 risk_factors.append(("High number of medications", "High"))
             elif num_medications > 15:
                 risk_factors.append(("Moderate medications", "Medium"))
                 
-            if num_diagnoses > 8:
+            if number_diagnoses > 8:
                 risk_factors.append(("Multiple comorbidities", "High"))
                 
             if risk_factors:

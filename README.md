@@ -46,7 +46,6 @@ Hospital-Readmission-Predictor/
 ├── setup.py                    # Package installation
 ├── Makefile                   # Development commands
 ├── requirements.txt            # Python dependencies
-├── pyproject.toml            # Project metadata
 │
 ├── app.py                     # Streamlit dashboard
 ├── download_data.py           # Dataset download script

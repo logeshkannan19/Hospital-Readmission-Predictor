@@ -6,55 +6,54 @@ project:
   description: "ML model to predict 30-day hospital readmissions"
 
 data:
-  source: "kaggle"
-  dataset_name: "diabetes-130-us-hospitals-for-years-1999-2008"
-  url: "https://www.kaggle.com/datasets/uciml/diabetes-130-us-hospitals-for-years-1999-2008"
+  source: "fairlearn"
+  dataset_name: "diabetes-130-us-hospitals"
   features:
     numerical:
       - time_in_hospital
       - num_lab_procedures
       - num_medications
       - num_procedures
-      - number_inpatient
-      - number_outpatient
-      - number_emergency
-      - num_diagnoses
-      - precode
+      - number_diagnoses
+      - had_inpatient_days
+      - had_emergency
+      - had_outpatient_days
+      - medicare
+      - medicaid
+      - age_encoded
     categorical:
       - race
       - gender
-      - age
       - discharge_disposition_id
       - admission_source_id
-      - admission_type_id
 
 preprocessing:
   missing_threshold: 0.5
-  test_size: 0.15
+  test_size: 0.3
   val_size: 0.15
   random_state: 42
   smote: true
 
 model:
-  type: "xgboost"
+  type: "gradient_boosting"
   objective: "binary:logistic"
   eval_metric: "auc"
   hyperparameters:
-    n_estimators: 200
-    max_depth: 6
+    n_estimators: 150
+    max_depth: 5
     learning_rate: 0.1
     subsample: 0.8
-    colsample_bytree: 0.8
+    min_samples_leaf: 10
 
 target:
-  column: "readmitted"
-  positive_class: "<30"
-  negative_class: ["NO", ">30"]
+  column: "readmit_binary"
+  positive_class: 1
+  negative_class: 0
 
 metrics:
   primary: "roc_auc"
-  threshold: 0.70
-  recall_threshold: 0.65
+  threshold: 0.65
+  recall_threshold: 0.50
 
 deployment:
   platform: "streamlit"

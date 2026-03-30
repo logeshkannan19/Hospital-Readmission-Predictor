@@ -1,0 +1,17 @@
+# GitHub Language Stats Configuration
+# Force Python to show as 100% of codebase
+
+*.pkl linguist-documentation=false
+*.csv linguist-documentation=false
+models/* linguist-documentation=false
+data/* linguist-documentation=false
+
+# Make notebooks count as Python
+*.ipynb linguist-language=Python
+
+# Exclude from language stats
+docs/* linguist-vendored
+dashboard/* linguist-vendored
+
+# Force Python detection
+* linguist-language=Python

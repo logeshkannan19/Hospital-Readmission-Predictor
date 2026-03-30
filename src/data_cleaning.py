@@ -1,36 +1,45 @@
 """
-Data Cleaning Module for Hospital Readmission Prediction
+Data Cleaning Module for Hospital Readmission Prediction.
+
+This module provides utilities for cleaning and preprocessing the diabetic patient dataset.
 """
 
+from typing import Any, Dict, List, Optional
 import pandas as pd
 import numpy as np
 from sklearn.impute import SimpleImputer
 
 
 class DataCleaner:
-    """Handles data cleaning operations for the diabetic patient dataset."""
+    """
+    Handles data cleaning operations for the diabetic patient dataset.
     
-    def __init__(self, missing_threshold=0.5):
+    Attributes:
+        missing_threshold: Threshold for dropping columns with missing values.
+        cols_to_drop: List of columns dropped due to high missing percentage.
+    """
+    
+    def __init__(self, missing_threshold: float = 0.5) -> None:
         """
         Initialize the DataCleaner.
         
         Args:
-            missing_threshold (float): Threshold for dropping columns with missing values
+            missing_threshold: Threshold for dropping columns (default: 0.5).
         """
         self.missing_threshold = missing_threshold
-        self.cols_to_drop = []
-        self.categorical_imputer = None
-        self.numerical_imputer = None
+        self.cols_to_drop: List[str] = []
+        self.categorical_imputer: Optional[SimpleImputer] = None
+        self.numerical_imputer: Optional[SimpleImputer] = None
         
-    def handle_missing_values(self, df):
+    def handle_missing_values(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Handle missing values in the dataset.
         
         Args:
-            df (pd.DataFrame): Input DataFrame
+            df: Input DataFrame.
             
         Returns:
-            pd.DataFrame: Cleaned DataFrame
+            Cleaned DataFrame.
         """
         df = df.copy()
         
@@ -41,64 +50,66 @@ class DataCleaner:
         missing_pct = df.isnull().sum() / len(df)
         self.cols_to_drop = missing_pct[missing_pct > self.missing_threshold].index.tolist()
         
-        df = df.drop(columns=self.cols_to_drop)
+        if self.cols_to_drop:
+            df = df.drop(columns=self.cols_to_drop)
         
-        df = df.drop(columns=['encounter_id', 'patient_nbr'], errors='ignore')
+        id_columns = ['encounter_id', 'patient_nbr']
+        df = df.drop(columns=[c for c in id_columns if c in df.columns], errors='ignore')
         
         return df
     
-    def impute_missing(self, df):
+    def impute_missing(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Impute remaining missing values.
         
         Args:
-            df (pd.DataFrame): Input DataFrame
+            df: Input DataFrame.
             
         Returns:
-            pd.DataFrame: DataFrame with imputed values
+            DataFrame with imputed values.
         """
         df = df.copy()
         
-        categorical_cols = df.select_dtypes(include=['object']).columns
-        numerical_cols = df.select_dtypes(include=[np.number]).columns
+        categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
+        numerical_cols = df.select_dtypes(include=[np.number]).columns.tolist()
         
-        if len(categorical_cols) > 0:
+        if categorical_cols:
             self.categorical_imputer = SimpleImputer(strategy='most_frequent')
-            df[list(categorical_cols)] = self.categorical_imputer.fit_transform(df[list(categorical_cols)])
+            df[categorical_cols] = self.categorical_imputer.fit_transform(df[categorical_cols])
         
-        if len(numerical_cols) > 0:
+        if numerical_cols:
             self.numerical_imputer = SimpleImputer(strategy='median')
-            df[list(numerical_cols)] = self.numerical_imputer.fit_transform(df[list(numerical_cols)])
+            df[numerical_cols] = self.numerical_imputer.fit_transform(df[numerical_cols])
         
         return df
     
-    def create_binary_target(self, df, target_col='readmitted'):
+    def create_binary_target(self, df: pd.DataFrame, target_col: str = 'readmitted') -> pd.DataFrame:
         """
         Create binary target variable.
         
         Args:
-            df (pd.DataFrame): Input DataFrame
-            target_col (str): Name of the target column
+            df: Input DataFrame.
+            target_col: Name of the target column.
             
         Returns:
-            pd.DataFrame: DataFrame with binary target
+            DataFrame with binary target.
         """
         df = df.copy()
         df['readmitted_binary'] = (df[target_col] == '<30').astype(int)
         return df
     
-    def encode_age(self, df, age_col='age'):
+    def encode_age(self, df: pd.DataFrame, age_col: str = 'age') -> pd.DataFrame:
         """
         Encode age ranges as ordinal values.
         
         Args:
-            df (pd.DataFrame): Input DataFrame
-            age_col (str): Name of the age column
+            df: Input DataFrame.
+            age_col: Name of the age column.
             
         Returns:
-            pd.DataFrame: DataFrame with encoded age
+            DataFrame with encoded age.
         """
-        age_mapping = {
+        age_mapping: Dict[str, int] = {
             '[0-10)': 0, '[10-20)': 1, '[20-30)': 2, '[30-40)': 3,
             '[40-50)': 4, '[50-60)': 5, '[60-70)': 6, '[70-80)': 7,
             '[80-90)': 8, '[90-100)': 9
@@ -106,17 +117,22 @@ class DataCleaner:
         df['age_encoded'] = df[age_col].map(age_mapping)
         return df
     
-    def select_features(self, df, numerical_features, categorical_features):
+    def select_features(
+        self, 
+        df: pd.DataFrame, 
+        numerical_features: List[str], 
+        categorical_features: List[str]
+    ) -> tuple:
         """
         Select and prepare features for modeling.
         
         Args:
-            df (pd.DataFrame): Input DataFrame
-            numerical_features (list): List of numerical feature names
-            categorical_features (list): List of categorical feature names
+            df: Input DataFrame.
+            numerical_features: List of numerical feature names.
+            categorical_features: List of categorical feature names.
             
         Returns:
-            tuple: (X, y) feature matrix and target vector
+            Tuple of (X, y, feature_cols).
         """
         df = pd.get_dummies(df, columns=categorical_features, drop_first=True)
         
@@ -128,15 +144,15 @@ class DataCleaner:
         
         return X, y, feature_cols
     
-    def fit_transform(self, df):
+    def fit_transform(self, df: pd.DataFrame) -> tuple:
         """
         Apply all cleaning steps.
         
         Args:
-            df (pd.DataFrame): Input DataFrame
+            df: Input DataFrame.
             
         Returns:
-            tuple: (X, y, feature_cols) cleaned data
+            Tuple of (X, y, feature_cols).
         """
         df = self.handle_missing_values(df)
         df = self.impute_missing(df)
@@ -158,15 +174,15 @@ class DataCleaner:
         return X, y, feature_cols
 
 
-def load_and_clean(filepath):
+def load_and_clean(filepath: str) -> tuple:
     """
     Convenience function to load and clean data.
     
     Args:
-        filepath (str): Path to the CSV file
+        filepath: Path to the CSV file.
         
     Returns:
-        tuple: (X, y, feature_cols) cleaned data
+        Tuple of (X, y, feature_cols).
     """
     df = pd.read_csv(filepath)
     cleaner = DataCleaner()

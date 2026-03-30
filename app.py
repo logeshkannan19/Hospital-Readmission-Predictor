@@ -41,7 +41,8 @@ def load_model():
 
 def predict_readmission(model, feature_cols, patient_data):
     """Make a prediction for a single patient."""
-    df = pd.DataFrame([patient_data], columns=feature_cols)
+    df = pd.DataFrame(columns=feature_cols)
+    df = pd.concat([df, pd.DataFrame([patient_data])], ignore_index=True)
     df = df.fillna(0)
     
     probability = model.predict_proba(df)[0][1]

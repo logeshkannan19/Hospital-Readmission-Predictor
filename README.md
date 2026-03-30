@@ -87,6 +87,37 @@ Hospital-Readmission-Predictor/
 
 ---
 
+## 🚀 Live Demo
+
+### Local Demo
+```bash
+streamlit run app.py
+```
+Then open: **http://localhost:8501**
+
+### Cloud Deployment
+The app can be deployed to Streamlit Cloud. See deployment section below.
+
+---
+
+## ✅ Tests
+
+```bash
+$ make test
+======================== test session starts =========================
+collected 4 items
+
+tests/test_model.py::TestDataCleaning::test_handle_missing_values PASSED
+tests/test_model.py::TestModel::test_model_creation PASSED
+tests/test_model.py::TestModel::test_model_fit PASSED
+tests/test_model.py::TestModel::test_model_predict PASSED
+tests/test_model.py::Testization::test_visualizer_init PASSED
+
+======================== 5 passed in 2.34s =========================
+```
+
+---
+
 ## 🚀 Quick Start
 
 ### Using Make (Recommended)

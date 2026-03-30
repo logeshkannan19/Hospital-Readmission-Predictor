@@ -22,10 +22,22 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "models", "best_model.pkl")
-FEATURE_COLS_PATH = os.path.join(BASE_DIR, "models", "feature_cols.pkl")
-METRICS_PATH = os.path.join(BASE_DIR, "models", "model_metrics.pkl")
+def get_model_path(filename):
+    """Get the full path to the model file."""
+    base_dirs = [
+        os.path.join(os.path.dirname(__file__), "models"),
+        os.path.join(os.path.dirname(__file__), "..", "models"),
+        "models"
+    ]
+    for base in base_dirs:
+        path = os.path.join(base, filename)
+        if os.path.exists(path):
+            return path
+    return os.path.join("models", filename)
+
+MODEL_PATH = get_model_path("best_model.pkl")
+FEATURE_COLS_PATH = get_model_path("feature_cols.pkl")
+METRICS_PATH = get_model_path("model_metrics.pkl")
 
 
 @st.cache_resource

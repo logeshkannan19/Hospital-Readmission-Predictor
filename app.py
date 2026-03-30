@@ -1,12 +1,13 @@
 """
 Hospital Readmission Prediction Dashboard
-==========================================
+=========================================
 A Streamlit dashboard for predicting 30-day hospital readmissions for diabetic patients.
 
 Author: ML Team
 Version: 1.0.0
 """
 
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -21,9 +22,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-MODEL_PATH = "models/best_model.pkl"
-FEATURE_COLS_PATH = "models/feature_cols.pkl"
-METRICS_PATH = "models/model_metrics.pkl"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "best_model.pkl")
+FEATURE_COLS_PATH = os.path.join(BASE_DIR, "models", "feature_cols.pkl")
+METRICS_PATH = os.path.join(BASE_DIR, "models", "model_metrics.pkl")
 
 
 @st.cache_resource

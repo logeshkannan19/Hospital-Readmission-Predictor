@@ -73,9 +73,9 @@ venv.bak/
 Thumbs.db
 
 # Project specific
-data/diabetic_data.csv
-data/*.csv
-models/*.pkl
+# data/diabetic_data.csv
+# data/*.csv
+# models/*.pkl
 *.log
 
 # Kaggle

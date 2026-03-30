@@ -5,7 +5,10 @@
   <img src="https://img.shields.io/badge/Streamlit-1.24+-blue.svg" alt="Streamlit">
   <img src="https://img.shields.io/badge/XGBoost-1.7+-blue.svg" alt="XGBoost">
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
+  <img https://img.shields.io/badge/Tests-Passing-brightgreen.svg alt="Tests">
 </p>
+
+> End-to-end machine learning project to predict 30-day hospital readmissions for diabetic patients.
 
 ## 📋 Problem Statement
 
@@ -13,22 +16,24 @@ Hospital readmissions for diabetic patients represent a significant challenge fo
 
 ### Business Impact
 
-- **Cost Reduction**: Reduce hospital readmission costs by 10-20%
-- **Improved Patient Outcomes**: Early identification leads to better care coordination
-- **Resource Optimization**: Allocate case management resources more effectively
-- **Quality Metrics**: Improve Hospital Quality (HQ) ratings
+| Impact Area | Description |
+|-------------|-------------|
+| **Cost Reduction** | Reduce hospital readmission costs by 10-20% |
+| **Patient Outcomes** | Early identification leads to better care coordination |
+| **Resource Optimization** | Allocate case management resources more effectively |
+| **Quality Metrics** | Improve Hospital Quality (HQ) ratings |
 
 ---
 
 ## 🎯 Project Overview
 
-This end-to-end machine learning project predicts whether a diabetic patient will be readmitted to the hospital within 30 days. The solution includes:
+This end-to-end machine learning project predicts whether a diabetic patient will be readmitted to the hospital within 30 days:
 
-- 📊 Exploratory Data Analysis (EDA)
-- 🧹 Data Preprocessing & Feature Engineering
-- 🤖 Model Training & Hyperparameter Tuning
-- 📈 Interactive Streamlit Dashboard
-- ☁️ Cloud Deployment Ready
+- 📊 **Exploratory Data Analysis (EDA)** - Data exploration & visualization
+- 🧹 **Data Preprocessing** - Cleaning, feature engineering, SMOTE
+- 🤖 **Model Training** - XGBoost, LightGBM, Random Forest with hyperparameter tuning
+- 📈 **Interactive Dashboard** - Streamlit web application
+- ☁️ **Cloud Deployment** - Streamlit Cloud / Hugging Face / Docker
 
 ---
 
@@ -37,33 +42,108 @@ This end-to-end machine learning project predicts whether a diabetic patient wil
 ```
 Hospital-Readmission-Predictor/
 ├── README.md                    # Project documentation
-├── requirements.txt             # Python dependencies
-├── app.py                       # Streamlit dashboard
-├── data/
-│   └── diabetic_data.csv       # Original dataset
-├── notebooks/
-│   ├── 01_EDA.ipynb            # Exploratory Data Analysis
-│   ├── 02_Preprocessing.ipynb  # Data Cleaning & Feature Engineering
-│   ├── 03_Modeling.ipynb        # Model Training & Evaluation
-│   └── 04_Deployment.ipynb     # Deployment Instructions
-├── src/
-│   ├── data_cleaning.py        # Data cleaning utilities
-│   ├── modeling.py             # Model training utilities
-│   └── visualization.py        # Plotting utilities
-├── models/
-│   ├── best_model.pkl          # Trained model
-│   ├── feature_cols.pkl        # Feature columns
-│   └── model_metrics.pkl       # Model performance metrics
-└── dashboard/                   # Dashboard screenshots
+├── LICENSE                     # MIT License
+├── setup.py                    # Package installation
+├── Makefile                   # Development commands
+├── requirements.txt            # Python dependencies
+├── pyproject.toml            # Project metadata
+│
+├── app.py                     # Streamlit dashboard
+├── download_data.py           # Dataset download script
+│
+├── configs/
+│   └── config.yaml           # Configuration file
+│
+├── data/                      # Data directory
+│   └── diabetic_data.csv     # Dataset (after download)
+│
+├── models/                    # Trained models
+│   ├── best_model.pkl
+│   ├── feature_cols.pkl
+│   └── model_metrics.pkl
+│
+├── notebooks/                  # Jupyter notebooks
+│   ├── 01_EDA.ipynb         # Exploratory Data Analysis
+│   ├── 02_Preprocessing.ipynb # Data Cleaning & Feature Engineering
+│   ├── 03_Modeling.ipynb     # Model Training & Evaluation
+│   └── 04_Deployment.ipynb  # Deployment Instructions
+│
+├── src/                       # Source code
+│   ├── __init__.py
+│   ├── data_cleaning.py      # Data cleaning utilities
+│   ├── modeling.py           # ML model utilities
+│   └── visualization.py      # Plotting utilities
+│
+├── tests/                     # Unit tests
+│   ├── __init__.py
+│   └── test_model.py
+│
+├── docker/                    # Docker files
+│   ├── Dockerfile
+│   └── docker-compose.yml
+│
+└── dashboard/                 # Dashboard screenshots
 ```
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Quick Start
 
-**Try the prediction dashboard:** [Hospital Readmission Predictor](https://hospital-readmission-predictor.streamlit.app)
+### Using Make (Recommended)
 
-*(Deploy to Streamlit Cloud - see instructions below)*
+```bash
+# Clone and setup
+git clone https://github.com/logeshkannan19/Hospital-Readmission-Predictor.git
+cd Hospital-Readmission-Predictor
+
+# Install dependencies and download data
+make setup
+
+# Train models
+make models
+
+# Run dashboard
+make run
+```
+
+### Manual Setup
+
+```bash
+# 1. Clone repository
+git clone https://github.com/logeshkannan19/Hospital-Readmission-Predictor.git
+cd Hospital-Readmission-Predictor
+
+# 2. Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Download dataset
+python download_data.py
+
+# 5. Run notebooks
+jupyter notebook
+
+# 6. Run dashboard
+streamlit run app.py
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| **Language** | Python 3.10+ |
+| **Data Processing** | Pandas, NumPy |
+| **Machine Learning** | Scikit-learn, XGBoost, LightGBM |
+| **Class Imbalance** | SMOTE (imbalanced-learn) |
+| **Visualization** | Plotly, Matplotlib, Seaborn |
+| **Dashboard** | Streamlit |
+| **Testing** | pytest |
+| **Deployment** | Streamlit Cloud / Docker |
 
 ---
 
@@ -90,130 +170,80 @@ Hospital-Readmission-Predictor/
 
 ---
 
-## 🛠️ Tech Stack
-
-| Category | Technology |
-|----------|------------|
-| **Language** | Python 3.10+ |
-| **Data Processing** | Pandas, NumPy |
-| **Machine Learning** | Scikit-learn, XGBoost, LightGBM |
-| **Visualization** | Plotly, Matplotlib, Seaborn |
-| **Dashboard** | Streamlit |
-| **Model Deployment** | Streamlit Cloud / Hugging Face |
-
----
-
 ## 📈 Model Performance
 
-| Metric | Score |
-|--------|-------|
-| **ROC-AUC** | >0.70 |
-| **Recall** | >0.65 |
-| **Precision** | >0.40 |
-| **F1 Score** | >0.50 |
+| Metric | Target | Achieved |
+|--------|--------|----------|
+| **ROC-AUC** | >0.70 | ✅ ~0.72 |
+| **Recall** | >0.65 | ✅ ~0.68 |
+| **Precision** | >0.40 | ✅ ~0.42 |
+| **F1 Score** | >0.50 | ✅ ~0.52 |
 
 ### Model Comparison
 
 | Model | ROC-AUC | Recall | Precision | F1 |
 |-------|---------|--------|-----------|-----|
-| XGBoost | 0.72 | 0.68 | 0.42 | 0.52 |
+| **XGBoost** | 0.72 | 0.68 | 0.42 | 0.52 |
 | LightGBM | 0.71 | 0.66 | 0.41 | 0.50 |
 | Random Forest | 0.69 | 0.62 | 0.38 | 0.47 |
 | Logistic Regression | 0.65 | 0.58 | 0.35 | 0.43 |
 
 ---
 
-## 💻 Installation & Setup
-
-### 1. Clone the Repository
+## 🧪 Testing
 
 ```bash
-git clone https://github.com/yourusername/Hospital-Readmission-Predictor.git
-cd Hospital-Readmission-Predictor
+# Run tests
+make test
+
+# Run with coverage
+pytest tests/ --cov=src --cov-report=html
 ```
-
-### 2. Create Virtual Environment
-
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Download Dataset
-
-The dataset is available on Kaggle:
-- [Diabetes 130-US Hospitals for Years 1999-2008](https://www.kaggle.com/datasets/uciml/diabetes-130-us-hospitals-for-years-1999-2008)
-
-Place `diabetic_data.csv` in the `data/` folder.
-
-### 5. Run Notebooks
-
-```bash
-jupyter notebook
-```
-
-Open and run the notebooks in order:
-1. `notebooks/01_EDA.ipynb`
-2. `notebooks/02_Preprocessing.ipynb`
-3. `notebooks/03_Modeling.ipynb`
-
-### 6. Run Streamlit Dashboard
-
-```bash
-streamlit run app.py
-```
-
-Open your browser to `http://localhost:8501`
 
 ---
 
 ## ☁️ Deployment
 
-### Option 1: Streamlit Cloud
+### Option 1: Streamlit Cloud (Recommended)
 
 1. Push code to GitHub
 2. Go to [share.streamlit.io](https://share.streamlit.io)
 3. Connect your GitHub repository
-4. Select repository and branch
-5. Set main file path: `app.py`
-6. Click **Deploy!**
+4. Set main file: `app.py`
+5. Click **Deploy!**
 
-### Option 2: Hugging Face Spaces
+### Option 2: Docker
+
+```bash
+# Build image
+docker build -t hospital-readmission-predictor -f docker/Dockerfile .
+
+# Run container
+docker run -p 8501:8501 hospital-readmission-predictor
+
+# Or use docker-compose
+docker-compose -f docker/docker-compose.yml up
+```
+
+### Option 3: Hugging Face Spaces
 
 1. Push code to GitHub
 2. Go to [huggingface.co/spaces](https://huggingface.co/spaces)
-3. Create new Space (select Streamlit)
+3. Create new Space → Select **Streamlit**
 4. Link your GitHub repository
 5. Deploy!
-
-### Option 3: Local with Docker
-
-```dockerfile
-FROM python:3.10-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-EXPOSE 8501
-CMD ["streamlit", "run", "app.py", "--server.address", "0.0.0.0"]
-```
 
 ---
 
 ## 📱 Dashboard Features
 
 ### Patient Input Form
-- Time in hospital
+- Time in hospital (days)
 - Number of lab procedures
 - Number of medications
 - Prior healthcare utilization (inpatient, outpatient, emergency)
-- Primary diagnosis indicators
+- Number of diagnoses
+- Primary diagnosis indicator
 
 ### Prediction Display
 - Risk probability percentage
@@ -224,7 +254,6 @@ CMD ["streamlit", "run", "app.py", "--server.address", "0.0.0.0"]
 - Follow-up scheduling guidance
 - Case management recommendations
 - Medication reconciliation suggestions
-- Patient education materials
 
 ---
 
@@ -232,40 +261,39 @@ CMD ["streamlit", "run", "app.py", "--server.address", "0.0.0.0"]
 
 | Feature | Description |
 |---------|-------------|
-| `encounter_id` | Unique identifier of the encounter |
-| `patient_nbr` | Unique identifier of the patient |
-| `race` | Race of the patient |
-| `gender` | Gender of the patient |
-| `age` | Age bracket of the patient |
 | `time_in_hospital` | Number of days spent in the hospital |
-| `num_lab_procedures` | Number of lab procedures |
+| `num_lab_procedures` | Number of lab procedures performed |
 | `num_medications` | Number of medications prescribed |
 | `num_procedures` | Number of procedures performed |
-| `number_inpatient` | Number of inpatient visits in the past year |
-| `number_outpatient` | Number of outpatient visits in the past year |
-| `number_emergency` | Number of emergency visits in the past year |
+| `number_inpatient` | Prior inpatient visits in the past year |
+| `number_outpatient` | Prior outpatient visits in the past year |
+| `number_emergency` | Prior emergency visits in the past year |
 | `num_diagnoses` | Number of diagnoses |
-| `precode` | Whether diabetes was the primary diagnosis |
-| `readmitted` | Target variable: <30, >30, or NO |
+| `precode` | Diabetes as primary diagnosis (0/1) |
+| `readmitted` | Target: <30, >30, or NO |
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ---
 
 ## 📝 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 🙏 Acknowledgments
 
 - Dataset: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/diabetes+130-us+hospitals+for+years+1999-2008)
-- Inspired by: [Diabetes Readmission Prediction](https://www.hindawi.com/journals/bmri/2014/781670/)
-
----
-
-## 📞 Contact
-
-For questions or suggestions, please open an issue on GitHub.
+- Based on research: [Impact of HbA1c Measurement on Hospital Readmission Rates](https://www.hindawi.com/journals/bmri/2014/781670/)
 
 ---
 
